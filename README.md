@@ -1,284 +1,354 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio Web con Chat</title>
-    <!-- Enlace a Tailwind CSS para un estilo rápido y responsivo -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Estilos personalizados para el reproductor y el chat */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Un fondo suave */
+            background-color: #f0f2f5; /* Light gray background */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px; /* Espaciado general */
-            box-sizing: border-box;
         }
-
         .container {
-            display: flex;
-            flex-direction: column; /* Columna por defecto para móviles */
-            gap: 24px; /* Espacio entre los componentes */
             background-color: #ffffff;
-            border-radius: 16px; /* Bordes más redondeados */
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada */
-            padding: 32px;
-            max-width: 900px; /* Ancho máximo del contenedor */
-            width: 100%;
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                flex-direction: row; /* Fila para pantallas medianas y grandes */
-            }
-        }
-
-        .radio-player, .chat-box {
-            flex: 1; /* Permite que ambos componentes ocupen el espacio disponible */
-            padding: 24px;
-            border-radius: 12px;
-            background-color: #f9fafb; /* Fondo ligeramente diferente para los paneles */
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra interna sutil */
-        }
-
-        .radio-player h1, .chat-box h2 {
-            text-align: center;
-            color: #1a202c; /* Color de texto oscuro */
-            margin-bottom: 24px;
-            font-weight: 700; /* Negrita */
-            font-size: 1.75rem; /* Tamaño de fuente más grande */
-        }
-
-        audio {
-            width: 100%;
-            margin-bottom: 20px;
-            border-radius: 8px; /* Bordes redondeados para el reproductor de audio */
-        }
-
-        .player-controls {
-            display: flex;
-            flex-direction: column; /* Controles en columna para móviles */
-            gap: 16px;
-            align-items: center;
-        }
-
-        @media (min-width: 640px) {
-            .player-controls {
-                flex-direction: row; /* Controles en fila para pantallas pequeñas y más grandes */
-            }
-        }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            background-color: #4c51bf; /* Azul morado */
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-weight: 600; /* Seminegrita */
-            box-shadow: 0 4px 10px rgba(76, 81, 191, 0.3); /* Sombra para el botón */
-        }
-
-        button:hover {
-            background-color: #3c429a; /* Azul morado más oscuro al pasar el ratón */
-            transform: translateY(-2px); /* Pequeño efecto de elevación */
-        }
-
-        input[type="range"] {
-            flex-grow: 1;
-            -webkit-appearance: none;
-            width: 100%;
-            height: 10px; /* Altura de la barra de volumen */
-            background: #cbd5e0; /* Color de fondo de la barra */
-            outline: none;
-            opacity: 0.9;
-            transition: opacity .2s;
-            border-radius: 5px;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 24px; /* Tamaño del "pulgar" del control de volumen */
-            height: 24px;
-            border-radius: 50%;
-            background: #4c51bf; /* Color del "pulgar" */
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #4c51bf;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .messages {
-            flex-grow: 1;
-            border: 1px solid #e2e8f0; /* Borde más suave */
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-            overflow-y: auto;
-            background-color: #ffffff;
-            max-height: 350px; /* Altura máxima para el historial de chat */
-            min-height: 150px; /* Altura mínima para el historial de chat */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 8px; /* Espacio entre mensajes */
+            max-width: 90%;
+            width: 1000px; /* Increased max-width for better layout */
+            min-height: 700px; /* Minimum height for better appearance */
         }
-
-        .message {
-            padding: 8px 12px;
-            border-radius: 8px;
-            background-color: #edf2f7; /* Fondo para cada mensaje */
-            color: #2d3748; /* Color de texto para mensajes */
-            word-wrap: break-word; /* Rompe palabras largas */
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+            }
         }
-
-        .message strong {
-            color: #4c51bf; /* Color del nombre de usuario */
-            margin-right: 8px;
+        .radio-section, .chat-section {
+            padding: 2.5rem; /* More padding */
+            flex: 1;
         }
-
-        .chat-input-area {
+        .radio-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Gradient background */
+            color: white;
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
-
-        .chat-box input[type="text"] {
-            flex-grow: 1; /* Ocupa el espacio restante */
-            padding: 12px;
+        .chat-section {
+            background-color: #f9fafb; /* Lighter background for chat */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .messages-display {
+            flex-grow: 1;
+            overflow-y: auto;
+            border-bottom: 1px solid #e2e8f0;
+            padding-right: 1rem; /* Padding for scrollbar */
+            display: flex;
+            flex-direction: column;
+        }
+        .message-input-area {
+            display: flex;
+            padding-top: 1rem;
+        }
+        .message-input-area input {
+            flex-grow: 1;
+            border-radius: 9999px; /* Fully rounded input */
+            padding: 0.75rem 1.5rem;
             border: 1px solid #cbd5e0;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1rem;
-            color: #2d3748;
-        }
-
-        .chat-box input[type="text"]:focus {
             outline: none;
-            border-color: #4c51bf; /* Borde azul al enfocar */
-            box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.2);
+            transition: border-color 0.2s;
+        }
+        .message-input-area input:focus {
+            border-color: #667eea;
+        }
+        .message-input-area button {
+            background-color: #667eea;
+            color: white;
+            border-radius: 9999px; /* Fully rounded button */
+            padding: 0.75rem 1.5rem;
+            margin-left: 0.75rem;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+        .message-input-area button:hover {
+            background-color: #5a67d8;
+            transform: translateY(-1px);
+        }
+        .message-input-area button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        .message-bubble {
+            max-width: 80%;
+            margin-bottom: 0.5rem;
+        }
+        .message-bubble.self {
+            align-self: flex-end;
+            background-color: #d1e7dd; /* Lighter green for self messages */
+            color: #155724;
+        }
+        .message-bubble.other {
+            align-self: flex-start;
+            background-color: #f8d7da; /* Lighter red for other messages */
+            color: #721c24;
+        }
+        audio {
+            width: 100%;
+            max-width: 400px; /* Limit audio player width */
+            margin-top: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
+    <div id="loading-indicator" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-lg text-gray-700">Cargando aplicación...</p>
+    </div>
+
     <div class="container">
-        <!-- Sección del Reproductor de Radio -->
-        <div class="radio-player">
-            <h1>Mi Radio Online</h1>
-            <audio id="radioStream" controls autoplay class="rounded-lg shadow-md">
-                <!--
-                    ¡IMPORTANTE! Reemplaza esta URL con la URL real de tu transmisión de radio.
-                    Puedes encontrar transmisiones de radio públicas para pruebas buscando "public radio stream URL"
-                    o usando servicios como Icecast/Shoutcast.
-                    Ejemplo: <source src="http://stream.radioscoop.com/radioscoop-high.mp3" type="audio/mpeg">
-                -->
-                <source src="https://centova.hostingelectrica.net/proxy/baulmania/stream" type="audio/mpeg">
+        <!-- Sección de la Radio -->
+        <div class="radio-section">
+            <h1 class="text-4xl font-bold mb-4">¡Bienvenido a tu Radio Web!</h1>
+            <p class="text-lg mb-6">Sintoniza la mejor música y chatea con otros oyentes.</p>
+            <audio controls preload="auto" src="https://centova.hostingelectrica.net/proxy/baulmania/stream">
                 Tu navegador no soporta el elemento de audio.
             </audio>
-            <div class="player-controls">
-                <button id="playPauseBtn" class="flex-shrink-0">Reproducir / Pausar</button>
-                <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.7">
+            <p class="text-sm mt-4 opacity-80">
+                Puedes cambiar la URL de la transmisión de audio en el código fuente.
+            </p>
+            <div id="user-id-display" class="mt-6 text-sm bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                Tu ID: Cargando...
             </div>
         </div>
 
         <!-- Sección del Chat -->
-        <div class="chat-box flex flex-col">
-            <h2>Chat en Vivo</h2>
-            <div class="messages" id="chatMessages">
-                <!-- Los mensajes del chat aparecerán aquí -->
-                <div class="message"><strong>Sistema:</strong> ¡Bienvenido al chat!</div>
+        <div class="chat-section">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Chat en Vivo</h2>
+            <div id="messages-display" class="messages-display mb-4 p-4 bg-white rounded-lg shadow-inner">
+                <!-- Los mensajes del chat se cargarán aquí -->
             </div>
-            <div class="chat-input-area">
-                <input type="text" id="messageInput" placeholder="Escribe tu mensaje..." class="rounded-lg">
-                <button id="sendBtn" class="flex-shrink-0">Enviar</button>
+            <div class="message-input-area">
+                <input type="text" id="message-input" placeholder="Escribe tu mensaje aquí..." class="focus:ring-2 focus:ring-indigo-500">
+                <button id="send-button">Enviar</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // --- Lógica del Reproductor de Radio ---
-        const radioStream = document.getElementById('radioStream');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const volumeControl = document.getElementById('volumeControl');
+    <script type="module">
+        // Importar las funciones necesarias de Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        let isPlaying = true; // Asumimos que el autoplay funciona inicialmente
+        // Variables globales para la aplicación Firebase
+        let app, db, auth, userId;
+        let isAuthReady = false; // Bandera para saber si la autenticación está lista
 
-        // Inicializa el texto del botón basado en el estado inicial
-        playPauseBtn.textContent = isPlaying ? 'Pausar' : 'Reproducir';
+        // Obtener ID de la aplicación y configuración de Firebase del entorno
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
-        playPauseBtn.addEventListener('click', () => {
-            if (isPlaying) {
-                radioStream.pause();
-                playPauseBtn.textContent = 'Reproducir';
-            } else {
-                radioStream.play();
-                playPauseBtn.textContent = 'Pausar';
+        /**
+         * Inicializa Firebase y maneja la autenticación del usuario.
+         * Se intenta autenticar con un token personalizado si está disponible,
+         * de lo contrario, se inicia sesión de forma anónima.
+         */
+        async function initFirebase() {
+            try {
+                // Inicializar la aplicación Firebase
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Escuchar cambios en el estado de autenticación
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        // Si el usuario ya está autenticado
+                        userId = user.uid;
+                        console.log("Autenticado como:", userId);
+                    } else {
+                        // Si no hay usuario autenticado, intentar con token o de forma anónima
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            // Usar token personalizado si está disponible
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                            userId = auth.currentUser.uid;
+                            console.log("Sesión iniciada con token personalizado:", userId);
+                        } else {
+                            // Iniciar sesión de forma anónima si no hay token
+                            await signInAnonymously(auth);
+                            userId = auth.currentUser.uid;
+                            console.log("Sesión iniciada anónimamente:", userId);
+                        }
+                    }
+                    // Marcar que la autenticación está lista y ocultar el indicador de carga
+                    isAuthReady = true;
+                    document.getElementById('loading-indicator').classList.add('hidden');
+                    setupChatListener(); // Iniciar la escucha de mensajes del chat
+                    displayUserId(); // Mostrar el ID del usuario en la interfaz
+                });
+            } catch (error) {
+                console.error("Error al inicializar Firebase:", error);
+                // Mostrar mensaje de error si la inicialización falla
+                document.getElementById('loading-indicator').textContent = 'Error al cargar la aplicación. Consulta la consola para más detalles.';
             }
-            isPlaying = !isPlaying;
-        });
-
-        volumeControl.addEventListener('input', () => {
-            radioStream.volume = volumeControl.value;
-        });
-
-        // Establece el volumen inicial del reproductor
-        radioStream.volume = volumeControl.value;
-
-        // --- Lógica del Chat (Local) ---
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-
-        // Función para añadir un mensaje al display del chat
-        function addMessage(user, message) {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
-            messageElement.innerHTML = `<strong>${user}:</strong> ${message}`;
-            chatMessages.appendChild(messageElement);
-            // Desplázate al final para mostrar el último mensaje
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // Manejador para el botón de enviar mensaje
-        sendBtn.addEventListener('click', () => {
-            sendMessage();
-        });
+        /**
+         * Envía un mensaje al chat de Firestore.
+         * El mensaje incluye el ID del usuario y una marca de tiempo.
+         */
+        async function sendMessage() {
+            const messageInput = document.getElementById('message-input');
+            const messageText = messageInput.value.trim();
 
-        // Manejador para la tecla Enter en el campo de entrada de mensaje
-        messageInput.addEventListener('keypress', (e) => {
+            // Solo enviar si hay texto y el usuario está autenticado
+            if (messageText && userId) {
+                try {
+                    // Referencia a la colección pública de mensajes del chat
+                    const messagesCollectionRef = collection(db, `artifacts/${appId}/public/data/radio_chat_messages`);
+                    await addDoc(messagesCollectionRef, {
+                        userId: userId,
+                        message: messageText,
+                        timestamp: serverTimestamp() // Marca de tiempo del servidor para ordenar
+                    });
+                    messageInput.value = ''; // Limpiar el campo de entrada
+                } catch (e) {
+                    console.error("Error al añadir documento: ", e);
+                }
+            } else {
+                console.warn("No hay mensaje o ID de usuario disponible para enviar.");
+            }
+        }
+
+        /**
+         * Configura un listener en tiempo real para los mensajes del chat en Firestore.
+         * Los mensajes se muestran en la interfaz y se ordenan por marca de tiempo.
+         */
+        function setupChatListener() {
+            // Asegurarse de que la base de datos y la autenticación estén listas
+            if (!db || !isAuthReady) {
+                console.log("Firestore o autenticación no están listos, reintentando listener...");
+                return;
+            }
+
+            const messagesCollectionRef = collection(db, `artifacts/${appId}/public/data/radio_chat_messages`);
+            // Crear una consulta para la colección de mensajes
+            // Importante: No usar orderBy() directamente en la consulta para evitar errores de índice.
+            // Se ordenará en el cliente.
+            const q = messagesCollectionRef;
+
+            // Escuchar cambios en tiempo real en la colección de mensajes
+            onSnapshot(q, (snapshot) => {
+                const messagesDisplay = document.getElementById('messages-display');
+                messagesDisplay.innerHTML = ''; // Limpiar mensajes existentes
+                const messages = [];
+
+                // Recopilar todos los mensajes y sus datos
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    messages.push(data);
+                });
+
+                // Ordenar los mensajes por marca de tiempo en JavaScript
+                // Esto es necesario porque no usamos orderBy en la consulta de Firestore
+                messages.sort((a, b) => {
+                    const timeA = a.timestamp ? a.timestamp.toDate().getTime() : 0;
+                    const timeB = b.timestamp ? b.timestamp.toDate().getTime() : 0;
+                    return timeA - timeB;
+                });
+
+                // Mostrar cada mensaje en la interfaz
+                messages.forEach(data => {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('message-bubble', 'p-3', 'rounded-xl', 'break-words', 'shadow-sm');
+
+                    // Asignar clases CSS según si el mensaje es del usuario actual o de otro
+                    if (data.userId === userId) {
+                        messageElement.classList.add('self');
+                    } else {
+                        messageElement.classList.add('other');
+                    }
+
+                    // Mostrar el ID del usuario (truncado) y el mensaje
+                    messageElement.innerHTML = `<strong class="text-xs opacity-80">${data.userId.substring(0, 8)}...</strong><p class="text-sm mt-1">${data.message}</p>`;
+                    messagesDisplay.appendChild(messageElement);
+                });
+
+                // Desplazarse automáticamente al final del chat
+                messagesDisplay.scrollTop = messagesDisplay.scrollHeight;
+            }, (error) => {
+                console.error("Error al escuchar mensajes: ", error);
+            });
+        }
+
+        /**
+         * Muestra el ID completo del usuario en la interfaz.
+         */
+        function displayUserId() {
+            const userIdDisplay = document.getElementById('user-id-display');
+            if (userIdDisplay && userId) {
+                userIdDisplay.textContent = `Tu ID: ${userId}`;
+            }
+        }
+
+        // Event Listeners
+        window.onload = initFirebase; // Iniciar Firebase cuando la ventana se carga
+
+        document.getElementById('send-button').addEventListener('click', sendMessage);
+
+        // Permitir enviar mensajes con la tecla Enter
+        document.getElementById('message-input').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 sendMessage();
             }
         });
-
-        // Función para enviar el mensaje
-        function sendMessage() {
-            const message = messageInput.value.trim();
-            if (message) {
-                // En un entorno real, el nombre de usuario vendría de una sesión o un prompt.
-                // Aquí, lo establecemos como "Tú" para simular tu propio mensaje.
-                const username = 'Tú'; // Puedes cambiar esto o pedir al usuario que lo introduzca
-                addMessage(username, message); // Añade el mensaje a la interfaz local
-
-                // Limpia el campo de entrada
-                messageInput.value = '';
-
-                // NOTA IMPORTANTE: Para un chat multiusuario en tiempo real,
-                // necesitarías enviar este mensaje a un servidor (ej. usando WebSockets).
-                // Este ejemplo solo lo muestra localmente.
-            }
-        }
     </script>
 </body>
 </html>
+
